@@ -5,6 +5,7 @@ import requests
 from fastapi import APIRouter, Depends, HTTPException, status
 from python_utils.logging import logging
 from app.utils import fetch_secrets
+from app.services import ddragon_league
 
 # Initialize logger
 logger = logging.init_logger()
@@ -21,7 +22,7 @@ RIOT_URL = secrets['riot_url']
 ''' APIs '''
 
 @router.get("/v1/champ-rotation")
-async def get_champ_rotation():
+async def get_champ_rotation(new_players=False):
     '''
     Description: Gets current list of champions from free rotation
 
@@ -65,6 +66,21 @@ async def get_champ_rotation():
     new_champ_rotation = all_champ_ids['freeChampionIdsForNewPlayers']
     champ_rotation = all_champ_ids['freeChampionIds']
 
-    print(champ_rotation)
+    champ_rotation_name = []
+
+    if new_players:
+        for champ_key in new_champ_rotation:
+            champ_info = await ddragon_league.get_champion_by_key(champ_key)
+            champ_name = champ_info['name']
+
+            champ_rotation_name.append(champ_name)
+
+    else:
+        for champ_key in champ_rotation:
+            champ_info = await ddragon_league.get_champion_by_key(champ_key)
+            champ_name = champ_info['name']
+
+            champ_rotation_name.append(champ_name)
 
     logger.info("Completed Request: /v1/champion-rotation")
+    return champ_rotation_name
