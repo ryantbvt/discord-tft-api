@@ -60,7 +60,7 @@ async def get_champ_rotation(new_players=False):
         )
     
     # Store JSON of all free champs, new players + normal rotation
-    logger.info('Successfully fetched free champion rotation')
+    logger.info('Successfully fetched free champion rotation as key')
     all_champ_ids = resp.json()
 
     new_champ_rotation = all_champ_ids['freeChampionIdsForNewPlayers']
@@ -68,6 +68,7 @@ async def get_champ_rotation(new_players=False):
 
     champ_rotation_name = []
 
+    # convert champion key to champion names
     if new_players:
         for champ_key in new_champ_rotation:
             champ_info = await ddragon_league.get_champion_by_key(champ_key)
