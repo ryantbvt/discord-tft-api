@@ -1,23 +1,17 @@
-''' Riot Integration API '''
+''' League of Legends Integration API '''
 
 import requests
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 from python_utils.logging import logging
-from app.utils import fetch_secrets
 from app.services import ddragon_league
+from app import RIOT_URL, RIOT_TOKEN
 
 # Initialize logger
 logger = logging.init_logger()
 
 # Initialize fastapi router
 router = APIRouter()
-
-# load config
-secrets = fetch_secrets.fetch_tokens("env")
-
-RIOT_TOKEN = secrets['riot_token']
-RIOT_URL = secrets['riot_url']
 
 ''' APIs '''
 
