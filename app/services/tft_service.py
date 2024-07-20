@@ -2,6 +2,7 @@
 
 import requests
 import socket
+import httpx
 
 from urllib.error import URLError, HTTPError
 from python_utils.logging import logging
@@ -58,35 +59,32 @@ async def champions_used(match_id: str, puuid: str, username: str):
     endpoint = f'{REGIONAL_RIOT_URL}/tft/match/v1/matches/{match_id}'
 
     try:
-        logger.info(f'Calling endpoint: {endpoint}')
-        resp = requests.get(endpoint, headers={
-            'X-Riot-Token': RIOT_TOKEN
-        })
+        async with httpx.AsyncClient() as client:
+            logger.info(f'Calling endpoint: {endpoint}')
+            response = await client.get(endpoint, headers={
+                'X-Riot-Token': RIOT_TOKEN
+            })
 
-    except HTTPError as e:
-        logger.error(f'HTTP error occurred: {e.code} {e.reason}')
-    except URLError as e:
-        logger.error(f"Failed to reach the server: {e.reason}")
-    except socket.timeout:
-        logger.error("The request timed out")
+        response.raise_for_status()
+        match_data = response.json()
+        
+        logger.info(f'Successfully fetched match info for {match_id}')
+        
+        participants = match_data['info']['participants']
+
+        for participant in participants:
+            if participant['puuid'] == puuid:
+                player_data = participant
+                logger.info(f'Fetched {username}\'s data from game: {match_id}')
+
+        champ_list = [unit['character_id'] for unit in player_data['units']]
+        logger.info(f'Successfully fetched {username}\'s units in game {match_id}')
+
+        return champ_list
+
+    except httpx.HTTPStatusError as e:
+        logger.error(f'HTTP error occurred: {e}')
+    except httpx.RequestError as e:
+        logger.error(f'Error while requesting: {e}')
     except Exception as e:
-        logger.error(f"An unexpected error occurred: {e}")
-
-    logger.info(f'Successfully fetched matched info for {match_id}')
-    match_data = resp.json()
-
-    participants = match_data['info']['participants']
-
-    for participant in participants:
-        if participant['puuid'] == puuid:
-            player_data = participant
-            logger.info(f'Fetched {username}\'s data from game: {match_id}')
-
-    champ_list = []
-
-    for unit in player_data['units']:
-        champ_list.append(unit['character_id'])
-
-    logger.info(f'Successfully fetched {username}\'s units in game {match_id}')
-
-    return champ_list
+        logger.error(f'An unexpected error occurred: {e}')
