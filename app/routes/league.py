@@ -1,11 +1,11 @@
-''' Riot Integration API '''
+''' League of Legends Integration API '''
 
 import requests
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 from python_utils.logging import logging
-from app.utils import fetch_secrets
 from app.services import ddragon_league
+from app import RIOT_URL, RIOT_TOKEN
 
 # Initialize logger
 logger = logging.init_logger()
@@ -13,15 +13,9 @@ logger = logging.init_logger()
 # Initialize fastapi router
 router = APIRouter()
 
-# load config
-secrets = fetch_secrets.fetch_tokens("env")
-
-RIOT_TOKEN = secrets['riot_token']
-RIOT_URL = secrets['riot_url']
-
 ''' APIs '''
 
-@router.get("/v1/champ-rotation")
+@router.get("/v1/lol/champ-rotation")
 async def get_champ_rotation(new_players=False):
     '''
     Description: Gets current list of champions from free rotation
@@ -29,7 +23,7 @@ async def get_champ_rotation(new_players=False):
     Return:
         champion_list: List[str] of champions
     '''
-    logger.info("Received Request: /v1/champion-rotation")
+    logger.info("Received Request: /v1/lol/champ-rotation")
 
     endpoint = RIOT_URL + '/lol/platform/v3/champion-rotations'
 
@@ -83,5 +77,5 @@ async def get_champ_rotation(new_players=False):
 
             champ_rotation_name.append(champ_name)
 
-    logger.info("Completed Request: /v1/champion-rotation")
+    logger.info("Completed Request: /v1/lol/champ-rotation")
     return champ_rotation_name
