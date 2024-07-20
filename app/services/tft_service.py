@@ -11,7 +11,7 @@ from app import RIOT_TOKEN, REGIONAL_RIOT_URL
 # initial logger
 logger = logging.init_logger()
 
-async def get_tft_matches(puuid: str, username: str):
+async def get_tft_matches(puuid: str, username: str, num_of_games: int = 15):
     '''
     Description: gets players matches
 
@@ -22,7 +22,7 @@ async def get_tft_matches(puuid: str, username: str):
         match_list (list[str]): list of matches
     '''
     logger.info(f'Fetching tft matches for: {username}')
-    endpoint = f'{REGIONAL_RIOT_URL}/tft/match/v1/matches/by-puuid/{puuid}/ids'
+    endpoint = f'{REGIONAL_RIOT_URL}/tft/match/v1/matches/by-puuid/{puuid}/ids?start=0&count={num_of_games}'
 
     try:
         logger.info(f'Calling endpoint: {endpoint}')

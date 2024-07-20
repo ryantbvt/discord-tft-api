@@ -15,7 +15,7 @@ router = APIRouter()
 
 ''' APIs '''
 
-@router.get("/v1/champ-rotation")
+@router.get("/v1/lol/champ-rotation")
 async def get_champ_rotation(new_players=False):
     '''
     Description: Gets current list of champions from free rotation
@@ -23,7 +23,7 @@ async def get_champ_rotation(new_players=False):
     Return:
         champion_list: List[str] of champions
     '''
-    logger.info("Received Request: /v1/champion-rotation")
+    logger.info("Received Request: /v1/lol/champ-rotation")
 
     endpoint = RIOT_URL + '/lol/platform/v3/champion-rotations'
 
@@ -77,5 +77,5 @@ async def get_champ_rotation(new_players=False):
 
             champ_rotation_name.append(champ_name)
 
-    logger.info("Completed Request: /v1/champion-rotation")
+    logger.info("Completed Request: /v1/lol/champ-rotation")
     return champ_rotation_name
