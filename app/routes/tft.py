@@ -44,16 +44,6 @@ async def top_champ(riot_user: riot_user.RiotUser):
 
     results = await asyncio.gather(*tasks) # asyncio.gather will run all of the tasks in the list concurrently
 
-    # for champ_list in results:
-    #     for unit in champ_list:
-    #         if unit in unit_dict:
-    #             unit_dict[unit] += 1
-    #         else:
-    #             unit_dict[unit] = 1
-    
-    # top_5_champs = sorted(unit_dict.items(), key=lambda item: item[1], reverse=True)[:5]
-    # top_5_champs_names = [unit for unit, _ in top_5_champs]
-
     # Convert list of lists -> list
     flattened_list = []
     for champ_list in results:
