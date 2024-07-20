@@ -6,6 +6,7 @@ from fastapi import APIRouter, HTTPException, status
 from python_utils.logging import logging
 from app.services import riot_accounts, tft_service
 from app.models import riot_user
+from collections import Counter
 
 # Initialize logger
 logger = logging.init_logger()
@@ -43,14 +44,28 @@ async def top_champ(riot_user: riot_user.RiotUser):
 
     results = await asyncio.gather(*tasks) # asyncio.gather will run all of the tasks in the list concurrently
 
+    # for champ_list in results:
+    #     for unit in champ_list:
+    #         if unit in unit_dict:
+    #             unit_dict[unit] += 1
+    #         else:
+    #             unit_dict[unit] = 1
+    
+    # top_5_champs = sorted(unit_dict.items(), key=lambda item: item[1], reverse=True)[:5]
+    # top_5_champs_names = [unit for unit, _ in top_5_champs]
+
+    # Convert list of lists -> list
+    flattened_list = []
     for champ_list in results:
         for unit in champ_list:
-            if unit in unit_dict:
-                unit_dict[unit] += 1
-            else:
-                unit_dict[unit] = 1
+            flattened_list.append(unit)
     
-    top_5_champs = sorted(unit_dict.items(), key=lambda item: item[1], reverse=True)[:5]
+    # count champions
+    unit_counter = Counter(flattened_list)
+
+    top_5_champs = unit_counter.most_common(5)
+
+    # Extract champion names
     top_5_champs_names = [unit for unit, _ in top_5_champs]
 
     logger.info("Completed Request: /v1/tft/top-champ")
