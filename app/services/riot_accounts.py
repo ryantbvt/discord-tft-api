@@ -5,12 +5,12 @@ import socket
 
 from urllib.error import URLError, HTTPError
 from python_utils.logging import logging
-from app import RIOT_TOKEN, RIOT_URL, ACCOUNTS_RIOT_URL
+from app import RIOT_TOKEN, REGIONAL_RIOT_URL
 
 # Initialize logger
 logger = logging.init_logger()
 
-async def get_account_info(account_name: str, tag_line: str):
+async def get_account_info(account_name: str, tag_line: str) -> dict:
     '''
     Description: get riot account information
 
@@ -22,7 +22,7 @@ async def get_account_info(account_name: str, tag_line: str):
         account_info (dict): account information of player
     '''
     logger.info(f'Fetching account info for: {account_name}#{tag_line}')
-    endpoint = f'{ACCOUNTS_RIOT_URL}/riot/account/v1/accounts/by-riot-id/{account_name}/{tag_line}'
+    endpoint = f'{REGIONAL_RIOT_URL}/riot/account/v1/accounts/by-riot-id/{account_name}/{tag_line}'
 
     try:
         logger.info(f'Calling endpoint: {endpoint}')

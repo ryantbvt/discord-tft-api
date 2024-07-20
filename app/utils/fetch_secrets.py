@@ -19,11 +19,7 @@ def fetch_tokens(run_type: str):
     '''
     logger.info("Running fetch_tokens")
 
-    secrets = {
-        "riot_url": None,
-        "riot_token": None,
-        "accounts_riot_url": None
-    }
+    secrets = {}
 
     if run_type == "container":
         logger.info("Fetching tokens from config.yaml")
@@ -35,13 +31,13 @@ def fetch_tokens(run_type: str):
         load_dotenv()
         RIOT_URL = os.getenv('RIOT_URL')
         RIOT_TOKEN = os.getenv('RIOT_TOKEN')
-        ACCOUNTS_RIOT_URL = os.getenv('ACCOUNTS_RIOT_URL')
+        REGIONAL_RIOT_URL = os.getenv('REGIONAL_RIOT_URL')
 
     logger.info("Successfully obtained token")
 
     secrets['riot_url'] = RIOT_URL
     secrets['riot_token'] = RIOT_TOKEN
-    secrets['accounts_riot_url'] = ACCOUNTS_RIOT_URL
+    secrets['regional_riot_url'] = REGIONAL_RIOT_URL
 
     logger.info("Returning secrets")
     return secrets
